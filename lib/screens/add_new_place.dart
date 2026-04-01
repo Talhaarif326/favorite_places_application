@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:favorite_places/providers/places_provider.dart';
+import 'package:favorite_places/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +15,7 @@ class AddNewPlace extends ConsumerStatefulWidget {
 
 class AddNewPlaceState extends ConsumerState<AddNewPlace> {
   final _inputControler = TextEditingController();
+  File? pickedImage;
 
   @override
   void dispose() {
@@ -26,7 +30,7 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
     }
     ref
         .read(userPlaceProvider.notifier)
-        .addNewPlace(_inputControler.text);
+        .addNewPlace(_inputControler.text, pickedImage!);
     Navigator.of(context).pop();
   }
 
@@ -43,6 +47,8 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
               controller: _inputControler,
               style: TextStyle(color: Colors.white),
             ),
+            SizedBox(height: 20),
+            ImageInput(selectedImage: (image) => pickedImage = image),
             SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: savePlace,

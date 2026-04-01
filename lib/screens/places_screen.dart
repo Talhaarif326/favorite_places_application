@@ -21,7 +21,10 @@ class PlacesScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: PlacesListWidget(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PlacesListWidget(),
+      ),
     );
   }
 }
