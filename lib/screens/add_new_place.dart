@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:favorite_places/providers/places_provider.dart';
 import 'package:favorite_places/widgets/image_input.dart';
+import 'package:favorite_places/widgets/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,6 +51,9 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
             SizedBox(height: 20),
             ImageInput(selectedImage: (image) => pickedImage = image),
             SizedBox(height: 20),
+            LocationInput(),
+            SizedBox(height: 20),
+
             ElevatedButton.icon(
               onPressed: savePlace,
               icon: Icon(Icons.add),
