@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:favorite_places/screens/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,7 +10,8 @@ import 'package:http/http.dart' as http;
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key, required this.onselectLocation});
 
-  final void Function(String location) onselectLocation;
+  final void Function(String location, double lat, double long)
+  onselectLocation;
 
   @override
   State<LocationInput> createState() {
@@ -78,10 +80,10 @@ class LocationInputState extends State<LocationInput> {
     setState(() {
       formatedLocation = resData['display_name'];
     });
-    if (formatedLocation == null) {
+    if (formatedLocation == null || lat == null || long == null) {
       return;
     }
-    widget.onselectLocation(formatedLocation!);
+    widget.onselectLocation(formatedLocation!, lat!, long!);
   }
 
   @override
@@ -128,7 +130,13 @@ class LocationInputState extends State<LocationInput> {
               icon: Icon(Icons.location_on_outlined),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MapScreen(),
+                  ),
+                );
+              },
               label: Text('Select on Map'),
               icon: Icon(Icons.map),
             ),

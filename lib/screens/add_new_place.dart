@@ -18,6 +18,8 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
   final _inputControler = TextEditingController();
   File? pickedImage;
   String? address;
+  double? lat;
+  double? long;
 
   @override
   void dispose() {
@@ -27,12 +29,12 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
 
   void savePlace() {
     final enteredText = _inputControler.text;
-    if (enteredText.isEmpty || address == null) {
+    if (enteredText.isEmpty || address == null || lat == null || long == null  ) {
       return;
     }
     ref
         .read(userPlaceProvider.notifier)
-        .addNewPlace(_inputControler.text, pickedImage!, address!);
+        .addNewPlace(_inputControler.text, pickedImage!, address! , lat! , long!);
     Navigator.of(context).pop();
   }
 
@@ -53,7 +55,11 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
             ImageInput(selectedImage: (image) => pickedImage = image),
             SizedBox(height: 20),
             LocationInput(
-              onselectLocation: (location) => address = location,
+              onselectLocation: (location, latitude, longitude) {
+                address = location;
+                lat = latitude;
+                long = longitude;
+              },
             ),
             SizedBox(height: 20),
 

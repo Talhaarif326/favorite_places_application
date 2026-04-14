@@ -9,12 +9,16 @@ class PlacesModels {
     required this.title,
     required this.image,
     required this.loaction,
+    required this.lat,
+    required this.long
   }) : id = uuid.v4();
 
   String id;
   String title;
   File image;
   String loaction;
+  double lat;
+  double long;
 }
 
 // class PlaceLoaction {
