@@ -44,6 +44,7 @@ class PlacesListWidget extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
             ),
+            subtitle: Text(places[index].loaction),
           ),
           
         );

@@ -17,6 +17,7 @@ class AddNewPlace extends ConsumerStatefulWidget {
 class AddNewPlaceState extends ConsumerState<AddNewPlace> {
   final _inputControler = TextEditingController();
   File? pickedImage;
+  String? address;
 
   @override
   void dispose() {
@@ -26,12 +27,12 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
 
   void savePlace() {
     final enteredText = _inputControler.text;
-    if (enteredText.isEmpty) {
+    if (enteredText.isEmpty || address == null) {
       return;
     }
     ref
         .read(userPlaceProvider.notifier)
-        .addNewPlace(_inputControler.text, pickedImage!);
+        .addNewPlace(_inputControler.text, pickedImage!, address!);
     Navigator.of(context).pop();
   }
 
@@ -51,7 +52,9 @@ class AddNewPlaceState extends ConsumerState<AddNewPlace> {
             SizedBox(height: 20),
             ImageInput(selectedImage: (image) => pickedImage = image),
             SizedBox(height: 20),
-            LocationInput(),
+            LocationInput(
+              onselectLocation: (location) => address = location,
+            ),
             SizedBox(height: 20),
 
             ElevatedButton.icon(

@@ -7,7 +7,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  const LocationInput({super.key, required this.onselectLocation});
+
+  final void Function(String location) onselectLocation;
 
   @override
   State<LocationInput> createState() {
@@ -26,6 +28,13 @@ class LocationInputState extends State<LocationInput> {
   void initState() {
     apiKey = dotenv.env["apiKey"] ?? "key not found";
     super.initState();
+  }
+
+  String get locationImage {
+    if (lat == null || long == null) {
+      return "";
+    }
+    return 'https://maps.locationiq.com/v3/staticmap?key=$apiKey&center=$lat,$long&zoom=15&maptype=streets&scale=2&format=jpg&size=480x480&markers=icon:large-red-cutout|$lat,$long';
   }
 
   void userLocation() async {
@@ -68,8 +77,11 @@ class LocationInputState extends State<LocationInput> {
     final resData = json.decode(response.body);
     setState(() {
       formatedLocation = resData['display_name'];
-      print(formatedLocation);
     });
+    if (formatedLocation == null) {
+      return;
+    }
+    widget.onselectLocation(formatedLocation!);
   }
 
   @override
@@ -80,16 +92,17 @@ class LocationInputState extends State<LocationInput> {
         color: Theme.of(context).colorScheme.onSurface,
       ),
     );
+
+    if (formatedLocation != null) {
+      privewContent = Image.network(
+        locationImage,
+        fit: BoxFit.cover,
+        height: double.infinity,
+        width: double.infinity,
+      );
+    }
     if (loadingUserLocation) {
       privewContent = CircularProgressIndicator();
-    }
-    if (formatedLocation != null) {
-      privewContent = Text(
-        formatedLocation!,
-        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
-      );
     }
     return Column(
       children: [
