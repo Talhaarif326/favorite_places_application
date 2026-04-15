@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:favorite_places/screens/map_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -22,6 +23,7 @@ class LocationInput extends StatefulWidget {
 class LocationInputState extends State<LocationInput> {
   String? formatedLocation;
   bool loadingUserLocation = false;
+  String? imageLocation;
   double? lat;
   double? long;
 
@@ -71,8 +73,31 @@ class LocationInputState extends State<LocationInput> {
     lat = locationData.latitude;
     long = locationData.longitude;
 
+    if (lat == null || long == null) {
+      return;
+    }
+
+    saveLocation(lat!, long!);
+  }
+
+  Future<void> onSelectMap() async {
+    final pickedLoaction = await Navigator.of(context).push<LatLng>(
+      MaterialPageRoute(builder: (context) => MapScreen()),
+    );
+    if (pickedLoaction == null) {
+      return;
+    }
+
+    setState(() {
+      lat = pickedLoaction.latitude;
+      long = pickedLoaction.longitude;
+      saveLocation(lat! , long!);
+    });
+  }
+
+  void saveLocation(double latitude, double longitude) async {
     Uri url = Uri.parse(
-      'https://us1.locationiq.com/v1/reverse?key=$apiKey&lat=$lat&lon=$long&format=json&',
+      'https://us1.locationiq.com/v1/reverse?key=$apiKey&lat=$latitude&lon=$longitude&format=json&',
     );
 
     final response = await http.get(url);
@@ -80,10 +105,11 @@ class LocationInputState extends State<LocationInput> {
     setState(() {
       formatedLocation = resData['display_name'];
     });
-    if (formatedLocation == null || lat == null || long == null) {
+    if (formatedLocation == null) {
       return;
     }
-    widget.onselectLocation(formatedLocation!, lat!, long!);
+
+    widget.onselectLocation(formatedLocation!, latitude, longitude);
   }
 
   @override
@@ -130,13 +156,7 @@ class LocationInputState extends State<LocationInput> {
               icon: Icon(Icons.location_on_outlined),
             ),
             TextButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MapScreen(),
-                  ),
-                );
-              },
+              onPressed: onSelectMap,
               label: Text('Select on Map'),
               icon: Icon(Icons.map),
             ),
