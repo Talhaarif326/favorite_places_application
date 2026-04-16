@@ -1,16 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({
-    super.key,
-  
-  });
-
-
+  const MapScreen({super.key});
 
   @override
   State<MapScreen> createState() {
@@ -19,12 +13,11 @@ class MapScreen extends StatefulWidget {
 }
 
 class MapScreenState extends State<MapScreen> {
-  late double lat;
-  late double long;
+  double lat = 34.50328618313398;
+  double long = 71.9057313306817;
   String apiKey = dotenv.env["apiKey"] ?? "key not found";
 
   late LatLng selectedPionts = LatLng(lat, long);
-
 
   @override
   Widget build(BuildContext context) {

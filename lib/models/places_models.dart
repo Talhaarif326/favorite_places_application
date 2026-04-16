@@ -10,8 +10,9 @@ class PlacesModels {
     required this.image,
     required this.loaction,
     required this.lat,
-    required this.long
-  }) : id = uuid.v4();
+    required this.long,
+    String? id
+  }) : id = id ??  uuid.v4();
 
   String id;
   String title;

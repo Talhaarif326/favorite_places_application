@@ -1,14 +1,17 @@
-import 'package:favorite_places/providers/places_provider.dart';
+import 'package:favorite_places/models/places_models.dart';
+
 import 'package:favorite_places/screens/place_detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PlacesListWidget extends ConsumerWidget {
-  const PlacesListWidget({super.key});
+
+class PlacesListWidget extends StatelessWidget {
+  const PlacesListWidget({super.key, required this.places});
+
+  final List<PlacesModels> places;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final places = ref.watch(userPlaceProvider);
+  Widget build(BuildContext context) {
+    
 
     if (places.isEmpty) {
       return Center(
@@ -46,7 +49,6 @@ class PlacesListWidget extends ConsumerWidget {
             ),
             subtitle: Text(places[index].loaction),
           ),
-          
         );
       },
     );
