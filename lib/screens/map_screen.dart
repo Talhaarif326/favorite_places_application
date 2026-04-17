@@ -4,8 +4,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  const MapScreen({super.key, required this.isSelecting});
 
+  final bool isSelecting;
   @override
   State<MapScreen> createState() {
     return MapScreenState();
@@ -25,23 +26,34 @@ class MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.arrow_back_sharp),
+            onPressed: widget.isSelecting
+                ? () {
+                    Navigator.pop(context, selectedPionts);
+                  }
+                : null,
+            icon: Icon(Icons.save),
           ),
         ],
       ),
       body: FlutterMap(
         options: MapOptions(
+          interactionOptions: InteractionOptions(
+            flags: widget.isSelecting
+                ? InteractiveFlag.all
+                : InteractiveFlag.none,
+          ),
           initialCenter: selectedPionts,
           initialZoom: 15,
-          onTap: (tapPosition, point) => setState(() {
-            selectedPionts = point;
-          }),
+          onTap: widget.isSelecting == true
+              ? null
+              : (tapPosition, point) => setState(() {
+                  selectedPionts = point;
+                }),
         ),
         children: [
           TileLayer(
             urlTemplate:
-                'https://{s}-tiles.locationiq.com/v2/obk/r/{z}/{x}/{y}.png?key=$apiKey',
+                'https://{s}-tiles.locationiq.com/v3/streets/r/{z}/{x}/{y}.png?key=$apiKey',
             subdomains: ['a', 'b', 'c'],
             userAgentPackageName: 'com.favorite_place',
           ),
@@ -54,17 +66,6 @@ class MapScreenState extends State<MapScreen> {
                 child: Icon(Icons.location_on, color: Colors.red),
               ),
             ],
-          ),
-          Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, selectedPionts);
-              },
-              child: Text("Confirm Selected Location"),
-            ),
           ),
         ],
       ),
